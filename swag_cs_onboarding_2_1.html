@@ -24,8 +24,6 @@
     --green: #8CE29A;
     --green-dim: #274430;
     --amber: #F2B15C;
-    --glow-accent: 0 0 0 1px rgba(110,231,220,0.4), 0 0 18px rgba(110,231,220,0.22);
-    --glow-accent-soft: 0 0 0 1px rgba(110,231,220,0.22), 0 0 10px rgba(110,231,220,0.12);
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -45,11 +43,7 @@
   a{ color:var(--accent); }
 
   /* Layout */
-  .app{ display:flex; min-height:100vh; margin-top:3px; }
-
-  /* XP progress bar */
-  #xp-bar-track{ position:fixed; top:0; left:0; width:100%; height:3px; background:rgba(255,255,255,0.04); z-index:999; }
-  #xp-bar-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--accent-dim), var(--accent)); box-shadow:0 0 10px rgba(110,231,220,0.7); transition:width .1s linear; }
+  .app{ display:flex; min-height:100vh; }
 
   .sidebar{
     width:270px; flex-shrink:0;
@@ -68,18 +62,16 @@
   .hero{ position:relative; }
   .hero-logo{ position:absolute; top:40px; right:56px; height:26px; width:auto; }
 
-  nav.toc{ display:flex; flex-direction:column; gap:3px; }
+  nav.toc{ display:flex; flex-direction:column; gap:2px; }
   nav.toc a{
     color:var(--text-muted); text-decoration:none; font-size:13.5px;
-    padding:9px 10px; border-radius:8px; display:flex; align-items:center; gap:11px;
-    transition:background .15s, color .15s, box-shadow .15s;
-    border:1px solid transparent;
+    padding:9px 10px; border-radius:8px; display:flex; align-items:center; gap:9px;
+    transition:background .15s, color .15s;
   }
   nav.toc a:hover{ background:var(--surface-2); color:var(--text); }
-  nav.toc a.active{ background:var(--surface-3); color:var(--accent); border-color:rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft); font-weight:600; }
-  nav.toc .dot{ width:7px; height:7px; background:var(--text-faint); flex-shrink:0; transform:rotate(45deg); border-radius:1.5px; transition:background .15s, box-shadow .15s; }
-  nav.toc a.active .dot{ background:var(--accent); box-shadow:0 0 8px rgba(110,231,220,0.9); }
-  nav.toc a:hover .dot{ background:var(--text-muted); }
+  nav.toc a.active{ background:var(--surface-3); color:var(--accent); }
+  nav.toc .dot{ width:6px; height:6px; border-radius:50%; background:var(--text-faint); flex-shrink:0; }
+  nav.toc a.active .dot{ background:var(--accent); }
 
   .main{ flex:1; min-width:0; }
 
@@ -90,45 +82,31 @@
       radial-gradient(700px 300px at 85% -10%, rgba(110,231,220,0.10), transparent 60%),
       radial-gradient(500px 260px at 10% 0%, rgba(242,99,122,0.07), transparent 60%);
   }
-  .hero .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:.08em; text-transform:uppercase; margin-bottom:14px; text-shadow:0 0 12px rgba(110,231,220,0.5); }
+  .hero .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:.08em; text-transform:uppercase; margin-bottom:14px; }
   .hero h1{ font-size:40px; line-height:1.15; max-width:720px; }
   .hero p.lede{ color:var(--text-muted); font-size:16px; max-width:600px; margin-top:16px; }
 
   section.block{ padding:56px; border-bottom:1px solid var(--line); max-width:1000px; }
   section.block:last-child{ border-bottom:none; }
-  .block-head{ display:flex; align-items:center; gap:14px; margin-bottom:8px; }
-  .block-eyebrow{
-    font-family:'IBM Plex Mono',monospace; color:var(--accent); font-size:11.5px; font-weight:600;
-    letter-spacing:.04em; padding:5px 12px 5px 14px; background:var(--surface-2);
-    border:1px solid rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft);
-    clip-path:polygon(10% 0%, 100% 0%, 100% 100%, 10% 100%, 0% 50%);
-    flex-shrink:0;
-  }
+  .block-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:8px; }
+  .block-eyebrow{ font-family:'IBM Plex Mono',monospace; color:var(--text-faint); font-size:12.5px; }
   .block-head h2{ font-size:28px; }
   .block-desc{ color:var(--text-muted); font-size:15px; max-width:640px; margin:14px 0 32px; }
 
-  .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px 24px; position:relative; transition:border-color .2s, box-shadow .2s; }
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
   .card + .card{ margin-top:14px; }
-  .card::before, .card::after{
-    content:''; position:absolute; width:14px; height:14px; pointer-events:none;
-    opacity:0; transition:opacity .2s;
-  }
-  .card::before{ top:-1px; left:-1px; border-top:2px solid var(--accent); border-left:2px solid var(--accent); border-radius:6px 0 0 0; }
-  .card::after{ bottom:-1px; right:-1px; border-bottom:2px solid var(--accent); border-right:2px solid var(--accent); border-radius:0 0 6px 0; }
-  .card:hover{ border-color:rgba(110,231,220,0.3); box-shadow:0 0 24px rgba(110,231,220,0.08); }
-  .card:hover::before, .card:hover::after{ opacity:1; }
   .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
   @media (max-width:820px){ .grid2, .grid3{ grid-template-columns:1fr; } }
 
-  .pill{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 9px; border-radius:99px; background:var(--surface-3); color:var(--text-muted); margin-right:6px; margin-bottom:6px; border:1px solid transparent; font-weight:600;}
-  .pill.accent{ background:var(--accent-dim); color:var(--accent); border-color:rgba(110,231,220,0.4); box-shadow:0 0 8px rgba(110,231,220,0.25); }
-  .pill.rose{ background:var(--rose-dim); color:var(--rose); border-color:rgba(242,99,122,0.4); box-shadow:0 0 8px rgba(242,99,122,0.2); }
-  .pill.green{ background:var(--green-dim); color:var(--green); border-color:rgba(140,226,154,0.4); box-shadow:0 0 8px rgba(140,226,154,0.2); }
+  .pill{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 9px; border-radius:99px; background:var(--surface-3); color:var(--text-muted); margin-right:6px; margin-bottom:6px;}
+  .pill.accent{ background:var(--accent-dim); color:var(--accent); }
+  .pill.rose{ background:var(--rose-dim); color:var(--rose); }
+  .pill.green{ background:var(--green-dim); color:var(--green); }
 
   .stat-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
   .stat{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; flex:1; min-width:130px; }
-  .stat .num{ font-family:'Fraunces',serif; font-size:20px; color:var(--accent); text-shadow:0 0 14px rgba(110,231,220,0.45); }
+  .stat .num{ font-family:'Fraunces',serif; font-size:20px; color:var(--accent); }
   .stat .lab{ font-size:12px; color:var(--text-faint); margin-top:2px; }
 
   h3.card-title{ font-size:17px; margin-bottom:8px; }
@@ -139,31 +117,31 @@
 
   /* Tool cards */
   .tool-card{ display:flex; gap:14px; align-items:flex-start; }
-  .tool-key{ background:var(--surface-3); color:var(--accent); font-size:11.5px; font-weight:700; padding:5px 10px; flex-shrink:0; margin-top:2px; border:1px solid rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft); clip-path:polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%);}
+  .tool-key{ background:var(--surface-3); color:var(--accent); font-size:12px; padding:4px 8px; border-radius:6px; flex-shrink:0; margin-top:2px;}
 
   /* Decision tree simulator */
-  .sim{ background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 0 0 1px rgba(110,231,220,0.08); }
+  .sim{ background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
   .sim-header{ padding:18px 22px; background:var(--surface-2); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
   .sim-header .t{ font-family:'Fraunces',serif; font-size:16px; }
-  .sim-header button{ background:none; border:1px solid var(--line); color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 12px; border-radius:8px; cursor:pointer; transition:border-color .15s, color .15s, box-shadow .15s; }
-  .sim-header button:hover{ border-color:var(--accent); color:var(--accent); box-shadow:var(--glow-accent-soft); }
+  .sim-header button{ background:none; border:1px solid var(--line); color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 12px; border-radius:8px; cursor:pointer; }
+  .sim-header button:hover{ border-color:var(--accent); color:var(--accent); }
   .sim-body{ padding:28px 26px; min-height:180px; }
   .sim-question{ font-size:16px; margin-bottom:18px; }
   .sim-options{ display:flex; gap:12px; flex-wrap:wrap; }
   .opt-btn{
     background:var(--surface-2); border:1px solid var(--line); color:var(--text);
     padding:12px 20px; border-radius:10px; font-size:14px; cursor:pointer;
-    transition:transform .1s, border-color .15s, box-shadow .15s;
+    transition:transform .1s, border-color .15s;
   }
-  .opt-btn:hover{ border-color:var(--accent); transform:translateY(-1px); box-shadow:var(--glow-accent-soft); }
+  .opt-btn:hover{ border-color:var(--accent); transform:translateY(-1px); }
   .opt-btn.no{ }
-  .opt-btn.no:hover{ border-color:var(--rose); box-shadow:0 0 0 1px rgba(242,99,122,0.4), 0 0 10px rgba(242,99,122,0.2); }
+  .opt-btn.no:hover{ border-color:var(--rose); }
   .trail{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
   .crumb{ font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--surface-3); color:var(--text-muted); padding:4px 9px; border-radius:6px; }
   .result{ border-radius:12px; padding:20px 22px; }
-  .result.reject{ background:var(--rose-dim); border:1px solid rgba(242,99,122,0.3); box-shadow:0 0 20px rgba(242,99,122,0.12); }
-  .result.accept{ background:var(--green-dim); border:1px solid rgba(140,226,154,0.3); box-shadow:0 0 20px rgba(140,226,154,0.12); }
-  .result.warn{ background:rgba(242,177,92,0.1); border:1px solid rgba(242,177,92,0.35); box-shadow:0 0 20px rgba(242,177,92,0.12); }
+  .result.reject{ background:var(--rose-dim); border:1px solid rgba(242,99,122,0.3); }
+  .result.accept{ background:var(--green-dim); border:1px solid rgba(140,226,154,0.3); }
+  .result.warn{ background:rgba(242,177,92,0.1); border:1px solid rgba(242,177,92,0.35); }
   .result h4{ font-size:16px; margin-bottom:8px; }
   .result.reject h4{ color:var(--rose); }
   .result.accept h4{ color:var(--green); }
@@ -177,9 +155,9 @@
   .reveal-btn{
     background:none; border:1px solid var(--accent-dim); color:var(--accent);
     font-family:'IBM Plex Mono',monospace; font-size:12px; padding:7px 14px;
-    border-radius:8px; cursor:pointer; transition:background .15s, box-shadow .15s;
+    border-radius:8px; cursor:pointer; transition:background .15s;
   }
-  .reveal-btn:hover{ background:var(--accent-dim); box-shadow:var(--glow-accent-soft); }
+  .reveal-btn:hover{ background:var(--accent-dim); }
   .case-a{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
   .case-a.open{ max-height:200px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); }
 
@@ -187,7 +165,7 @@
   .steps{ counter-reset:step; }
   .step{ display:flex; gap:16px; padding:16px 0; border-bottom:1px dashed var(--line); }
   .step:last-child{ border-bottom:none; }
-  .step-num{ width:28px; height:28px; flex-shrink:0; background:var(--surface-3); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; border:1px solid rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft); clip-path:polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%); }
+  .step-num{ width:26px; height:26px; flex-shrink:0; border-radius:7px; background:var(--surface-3); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12.5px; }
   .step h4{ font-size:14.5px; font-family:'Inter',sans-serif; font-weight:600; margin-bottom:4px; }
   .step p{ font-size:13.5px; color:var(--text-muted); margin:0; }
 
@@ -198,9 +176,8 @@
     border-radius:10px; padding:11px 14px; color:var(--text); font-size:14px; font-family:'Inter',sans-serif;
   }
   .faq-search::placeholder{ color:var(--text-faint); }
-  .chip{ background:var(--surface-2); border:1px solid var(--line); color:var(--text-muted); font-size:12px; padding:6px 12px; border-radius:99px; cursor:pointer; transition:box-shadow .15s, border-color .15s, color .15s; }
-  .chip:hover{ border-color:rgba(110,231,220,0.4); color:var(--text); }
-  .chip.active{ background:var(--accent-dim); color:var(--accent); border-color:rgba(110,231,220,0.5); box-shadow:var(--glow-accent-soft); font-weight:600; }
+  .chip{ background:var(--surface-2); border:1px solid var(--line); color:var(--text-muted); font-size:12px; padding:6px 12px; border-radius:99px; cursor:pointer; }
+  .chip.active{ background:var(--accent-dim); color:var(--accent); border-color:transparent; }
   .faq-item{ background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden; }
   .faq-q{ padding:16px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:12px; font-size:14.5px; font-weight:500;}
   .faq-q .arrow{ color:var(--text-faint); transition:transform .2s; flex-shrink:0; }
@@ -243,7 +220,6 @@
 </style>
 </head>
 <body>
-<div id="xp-bar-track"><div id="xp-bar-fill"></div></div>
 <svg width="0" height="0" style="position:absolute;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <symbol id="ph-avatar" viewBox="0 0 24 24">
@@ -298,7 +274,7 @@
     <!-- 1. PLATFORM -->
     <section class="block" id="platform">
       <div class="block-head">
-        <span class="block-eyebrow">LV.01</span>
+        <span class="block-eyebrow">01</span>
         <h2>平台是什麼</h2>
       </div>
       <p class="block-desc">SWAG 是一個直播與內容平台，站上有兩種主要角色：<strong>用戶（觀眾）</strong>與<strong>創作者（主播 / Swagger）</strong>。用戶透過站內貨幣「鑽石」觀看直播、解鎖內容、聊天與贈送禮物；創作者則透過經營直播與內容獲得收益分潤。客服每天處理的問題，幾乎都圍繞在「鑽石怎麼花的」與「主播和用戶之間發生了什麼」這兩件事上。</p>
@@ -343,7 +319,7 @@
     <!-- 1B. APP NAVIGATION -->
     <section class="block" id="appnav">
       <div class="block-head">
-        <span class="block-eyebrow">LV.02</span>
+        <span class="block-eyebrow">02</span>
         <h2>App 介面導覽與互動規則</h2>
       </div>
       <p class="block-desc">用戶回報「找不到功能」「按鈕沒反應」時，先知道每個分頁長什麼樣、東西放在哪，才不用每次都反問工程師。</p>
@@ -448,7 +424,7 @@
     <!-- 1C. PRODUCT FULL MAP -->
     <section class="block" id="product">
       <div class="block-head">
-        <span class="block-eyebrow">LV.03</span>
+        <span class="block-eyebrow">03</span>
         <h2>帳號、下載與功能地圖</h2>
       </div>
       <p class="block-desc">這節是逐頁拆解版的產品知識庫——從用戶怎麼下載、怎麼註冊，到每個分頁按鈕的意思、每種功能扣多少鑽，全部整理成可以直接查的對照表。遇到用戶問「這顆按鈕是幹嘛的」「為什麼超商付款有上限」，先來這裡找答案。</p>
@@ -914,7 +890,7 @@
     <!-- 2. ECONOMY -->
     <section class="block" id="economy">
       <div class="block-head">
-        <span class="block-eyebrow">LV.04</span>
+        <span class="block-eyebrow">04</span>
         <h2>鑽石經濟與 VIP 制度</h2>
       </div>
       <p class="block-desc">幾乎所有「退款」「沒收到」「儲值」類進線，最後都要回到這一節的概念。記熟它，能讓你在對話中快速判斷這筆爭議「歸不歸平台管」。</p>
@@ -968,7 +944,7 @@
     <!-- 3. TOOLS -->
     <section class="block" id="tools">
       <div class="block-head">
-        <span class="block-eyebrow">LV.05</span>
+        <span class="block-eyebrow">05</span>
         <h2>客服後台工具箱</h2>
       </div>
       <p class="block-desc">正式上線前，你至少要能講清楚這四個工具「各自負責什麼」。實際帳密與權限請洽客服部主管開通。</p>
@@ -1043,7 +1019,7 @@
     <!-- 3B. ACCOUNT / KYC / REPORT SOP -->
     <section class="block" id="sop-account">
       <div class="block-head">
-        <span class="block-eyebrow">LV.06</span>
+        <span class="block-eyebrow">06</span>
         <h2>帳號協尋、KYC 驗證、騙點申報 SOP</h2>
       </div>
       <p class="block-desc">這三種是新人最早會獨立處理的進線類型：用戶登不進去、要驗證身分、覺得被主播騙了。三種都有明確的判斷順序，照著走就不容易出錯。</p>
@@ -1134,7 +1110,7 @@
     <!-- 4. DISPUTE SOP -->
     <section class="block" id="sop-dispute">
       <div class="block-head">
-        <span class="block-eyebrow">LV.07</span>
+        <span class="block-eyebrow">07</span>
         <h2>私下交易爭議處理 SOP</h2>
       </div>
       <p class="block-desc">這是新人最容易判斷錯誤的一條 SOP，也是最常遇到的爭議類型：用戶或主播投訴「私下轉帳、收現、約會沒履行」。核心心法是兩條獨立的軸線——<strong>退鑽看比例，懲處看事實</strong>。下面直接練習判斷。</p>
@@ -1196,7 +1172,7 @@
     <!-- 5. PAYMENT & BUG SOP -->
     <section class="block" id="sop-payment">
       <div class="block-head">
-        <span class="block-eyebrow">LV.08</span>
+        <span class="block-eyebrow">08</span>
         <h2>儲值查單 / 一般 Bug 處理 SOP</h2>
       </div>
       <p class="block-desc">用戶「已扣款但沒收到鑽石」是每天都會遇到的高頻問題。核心原則：<strong>先在 Mixpanel 與 Slack 對帳，確認金流狀態，再決定是否需要到 Telegram 群組向金流商查單。</strong></p>
@@ -1342,7 +1318,7 @@
     <!-- 6. FAQ -->
     <section class="block" id="faq">
       <div class="block-head">
-        <span class="block-eyebrow">LV.09</span>
+        <span class="block-eyebrow">09</span>
         <h2>常見問題 FAQ</h2>
       </div>
       <p class="block-desc">整理自用戶端與主播端的 FAQ 資料庫，用來練習「看到關鍵字就能反射回答」。可以用搜尋框或標籤篩選。</p>
@@ -1363,18 +1339,6 @@
 </div>
 
 <script>
-/* ---------- XP progress bar ---------- */
-const xpFill = document.getElementById('xp-bar-fill');
-function updateXpBar(){
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
-  xpFill.style.width = pct + '%';
-}
-window.addEventListener('scroll', updateXpBar, { passive: true });
-window.addEventListener('resize', updateXpBar);
-updateXpBar();
-
 /* ---------- Scroll spy ---------- */
 const sections = ['platform','appnav','product','economy','tools','sop-account','sop-dispute','sop-payment','faq'];
 const tocLinks = document.querySelectorAll('#toc a');
