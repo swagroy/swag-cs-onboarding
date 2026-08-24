@@ -24,6 +24,8 @@
     --green: #8CE29A;
     --green-dim: #274430;
     --amber: #F2B15C;
+    --glow-accent: 0 0 0 1px rgba(110,231,220,0.4), 0 0 18px rgba(110,231,220,0.22);
+    --glow-accent-soft: 0 0 0 1px rgba(110,231,220,0.22), 0 0 10px rgba(110,231,220,0.12);
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -43,7 +45,11 @@
   a{ color:var(--accent); }
 
   /* Layout */
-  .app{ display:flex; min-height:100vh; }
+  .app{ display:flex; min-height:100vh; margin-top:3px; }
+
+  /* XP progress bar */
+  #xp-bar-track{ position:fixed; top:0; left:0; width:100%; height:3px; background:rgba(255,255,255,0.04); z-index:999; }
+  #xp-bar-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--accent-dim), var(--accent)); box-shadow:0 0 10px rgba(110,231,220,0.7); transition:width .1s linear; }
 
   .sidebar{
     width:270px; flex-shrink:0;
@@ -62,16 +68,18 @@
   .hero{ position:relative; }
   .hero-logo{ position:absolute; top:40px; right:56px; height:26px; width:auto; }
 
-  nav.toc{ display:flex; flex-direction:column; gap:2px; }
+  nav.toc{ display:flex; flex-direction:column; gap:3px; }
   nav.toc a{
     color:var(--text-muted); text-decoration:none; font-size:13.5px;
-    padding:9px 10px; border-radius:8px; display:flex; align-items:center; gap:9px;
-    transition:background .15s, color .15s;
+    padding:9px 10px; border-radius:8px; display:flex; align-items:center; gap:11px;
+    transition:background .15s, color .15s, box-shadow .15s;
+    border:1px solid transparent;
   }
   nav.toc a:hover{ background:var(--surface-2); color:var(--text); }
-  nav.toc a.active{ background:var(--surface-3); color:var(--accent); }
-  nav.toc .dot{ width:6px; height:6px; border-radius:50%; background:var(--text-faint); flex-shrink:0; }
-  nav.toc a.active .dot{ background:var(--accent); }
+  nav.toc a.active{ background:var(--surface-3); color:var(--accent); border-color:rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft); font-weight:600; }
+  nav.toc .dot{ width:7px; height:7px; background:var(--text-faint); flex-shrink:0; transform:rotate(45deg); border-radius:1.5px; transition:background .15s, box-shadow .15s; }
+  nav.toc a.active .dot{ background:var(--accent); box-shadow:0 0 8px rgba(110,231,220,0.9); }
+  nav.toc a:hover .dot{ background:var(--text-muted); }
 
   .main{ flex:1; min-width:0; }
 
@@ -82,31 +90,45 @@
       radial-gradient(700px 300px at 85% -10%, rgba(110,231,220,0.10), transparent 60%),
       radial-gradient(500px 260px at 10% 0%, rgba(242,99,122,0.07), transparent 60%);
   }
-  .hero .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:.08em; text-transform:uppercase; margin-bottom:14px; }
+  .hero .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:.08em; text-transform:uppercase; margin-bottom:14px; text-shadow:0 0 12px rgba(110,231,220,0.5); }
   .hero h1{ font-size:40px; line-height:1.15; max-width:720px; }
   .hero p.lede{ color:var(--text-muted); font-size:16px; max-width:600px; margin-top:16px; }
 
   section.block{ padding:56px; border-bottom:1px solid var(--line); max-width:1000px; }
   section.block:last-child{ border-bottom:none; }
-  .block-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:8px; }
-  .block-eyebrow{ font-family:'IBM Plex Mono',monospace; color:var(--text-faint); font-size:12.5px; }
+  .block-head{ display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+  .block-eyebrow{
+    font-family:'IBM Plex Mono',monospace; color:var(--accent); font-size:11.5px; font-weight:600;
+    letter-spacing:.04em; padding:5px 12px 5px 14px; background:var(--surface-2);
+    border:1px solid rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft);
+    clip-path:polygon(10% 0%, 100% 0%, 100% 100%, 10% 100%, 0% 50%);
+    flex-shrink:0;
+  }
   .block-head h2{ font-size:28px; }
   .block-desc{ color:var(--text-muted); font-size:15px; max-width:640px; margin:14px 0 32px; }
 
-  .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px 24px; position:relative; transition:border-color .2s, box-shadow .2s; }
   .card + .card{ margin-top:14px; }
+  .card::before, .card::after{
+    content:''; position:absolute; width:14px; height:14px; pointer-events:none;
+    opacity:0; transition:opacity .2s;
+  }
+  .card::before{ top:-1px; left:-1px; border-top:2px solid var(--accent); border-left:2px solid var(--accent); border-radius:6px 0 0 0; }
+  .card::after{ bottom:-1px; right:-1px; border-bottom:2px solid var(--accent); border-right:2px solid var(--accent); border-radius:0 0 6px 0; }
+  .card:hover{ border-color:rgba(110,231,220,0.3); box-shadow:0 0 24px rgba(110,231,220,0.08); }
+  .card:hover::before, .card:hover::after{ opacity:1; }
   .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
   @media (max-width:820px){ .grid2, .grid3{ grid-template-columns:1fr; } }
 
-  .pill{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 9px; border-radius:99px; background:var(--surface-3); color:var(--text-muted); margin-right:6px; margin-bottom:6px;}
-  .pill.accent{ background:var(--accent-dim); color:var(--accent); }
-  .pill.rose{ background:var(--rose-dim); color:var(--rose); }
-  .pill.green{ background:var(--green-dim); color:var(--green); }
+  .pill{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 9px; border-radius:99px; background:var(--surface-3); color:var(--text-muted); margin-right:6px; margin-bottom:6px; border:1px solid transparent; font-weight:600;}
+  .pill.accent{ background:var(--accent-dim); color:var(--accent); border-color:rgba(110,231,220,0.4); box-shadow:0 0 8px rgba(110,231,220,0.25); }
+  .pill.rose{ background:var(--rose-dim); color:var(--rose); border-color:rgba(242,99,122,0.4); box-shadow:0 0 8px rgba(242,99,122,0.2); }
+  .pill.green{ background:var(--green-dim); color:var(--green); border-color:rgba(140,226,154,0.4); box-shadow:0 0 8px rgba(140,226,154,0.2); }
 
   .stat-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
   .stat{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; flex:1; min-width:130px; }
-  .stat .num{ font-family:'Fraunces',serif; font-size:20px; color:var(--accent); }
+  .stat .num{ font-family:'Fraunces',serif; font-size:20px; color:var(--accent); text-shadow:0 0 14px rgba(110,231,220,0.45); }
   .stat .lab{ font-size:12px; color:var(--text-faint); margin-top:2px; }
 
   h3.card-title{ font-size:17px; margin-bottom:8px; }
@@ -117,31 +139,31 @@
 
   /* Tool cards */
   .tool-card{ display:flex; gap:14px; align-items:flex-start; }
-  .tool-key{ background:var(--surface-3); color:var(--accent); font-size:12px; padding:4px 8px; border-radius:6px; flex-shrink:0; margin-top:2px;}
+  .tool-key{ background:var(--surface-3); color:var(--accent); font-size:11.5px; font-weight:700; padding:5px 10px; flex-shrink:0; margin-top:2px; border:1px solid rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft); clip-path:polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%);}
 
   /* Decision tree simulator */
-  .sim{ background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .sim{ background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 0 0 1px rgba(110,231,220,0.08); }
   .sim-header{ padding:18px 22px; background:var(--surface-2); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
   .sim-header .t{ font-family:'Fraunces',serif; font-size:16px; }
-  .sim-header button{ background:none; border:1px solid var(--line); color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 12px; border-radius:8px; cursor:pointer; }
-  .sim-header button:hover{ border-color:var(--accent); color:var(--accent); }
+  .sim-header button{ background:none; border:1px solid var(--line); color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 12px; border-radius:8px; cursor:pointer; transition:border-color .15s, color .15s, box-shadow .15s; }
+  .sim-header button:hover{ border-color:var(--accent); color:var(--accent); box-shadow:var(--glow-accent-soft); }
   .sim-body{ padding:28px 26px; min-height:180px; }
   .sim-question{ font-size:16px; margin-bottom:18px; }
   .sim-options{ display:flex; gap:12px; flex-wrap:wrap; }
   .opt-btn{
     background:var(--surface-2); border:1px solid var(--line); color:var(--text);
     padding:12px 20px; border-radius:10px; font-size:14px; cursor:pointer;
-    transition:transform .1s, border-color .15s;
+    transition:transform .1s, border-color .15s, box-shadow .15s;
   }
-  .opt-btn:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .opt-btn:hover{ border-color:var(--accent); transform:translateY(-1px); box-shadow:var(--glow-accent-soft); }
   .opt-btn.no{ }
-  .opt-btn.no:hover{ border-color:var(--rose); }
+  .opt-btn.no:hover{ border-color:var(--rose); box-shadow:0 0 0 1px rgba(242,99,122,0.4), 0 0 10px rgba(242,99,122,0.2); }
   .trail{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
   .crumb{ font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--surface-3); color:var(--text-muted); padding:4px 9px; border-radius:6px; }
   .result{ border-radius:12px; padding:20px 22px; }
-  .result.reject{ background:var(--rose-dim); border:1px solid rgba(242,99,122,0.3); }
-  .result.accept{ background:var(--green-dim); border:1px solid rgba(140,226,154,0.3); }
-  .result.warn{ background:rgba(242,177,92,0.1); border:1px solid rgba(242,177,92,0.35); }
+  .result.reject{ background:var(--rose-dim); border:1px solid rgba(242,99,122,0.3); box-shadow:0 0 20px rgba(242,99,122,0.12); }
+  .result.accept{ background:var(--green-dim); border:1px solid rgba(140,226,154,0.3); box-shadow:0 0 20px rgba(140,226,154,0.12); }
+  .result.warn{ background:rgba(242,177,92,0.1); border:1px solid rgba(242,177,92,0.35); box-shadow:0 0 20px rgba(242,177,92,0.12); }
   .result h4{ font-size:16px; margin-bottom:8px; }
   .result.reject h4{ color:var(--rose); }
   .result.accept h4{ color:var(--green); }
@@ -155,9 +177,9 @@
   .reveal-btn{
     background:none; border:1px solid var(--accent-dim); color:var(--accent);
     font-family:'IBM Plex Mono',monospace; font-size:12px; padding:7px 14px;
-    border-radius:8px; cursor:pointer; transition:background .15s;
+    border-radius:8px; cursor:pointer; transition:background .15s, box-shadow .15s;
   }
-  .reveal-btn:hover{ background:var(--accent-dim); }
+  .reveal-btn:hover{ background:var(--accent-dim); box-shadow:var(--glow-accent-soft); }
   .case-a{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
   .case-a.open{ max-height:200px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); }
 
@@ -165,7 +187,7 @@
   .steps{ counter-reset:step; }
   .step{ display:flex; gap:16px; padding:16px 0; border-bottom:1px dashed var(--line); }
   .step:last-child{ border-bottom:none; }
-  .step-num{ width:26px; height:26px; flex-shrink:0; border-radius:7px; background:var(--surface-3); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12.5px; }
+  .step-num{ width:28px; height:28px; flex-shrink:0; background:var(--surface-3); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; border:1px solid rgba(110,231,220,0.35); box-shadow:var(--glow-accent-soft); clip-path:polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%); }
   .step h4{ font-size:14.5px; font-family:'Inter',sans-serif; font-weight:600; margin-bottom:4px; }
   .step p{ font-size:13.5px; color:var(--text-muted); margin:0; }
 
@@ -176,8 +198,9 @@
     border-radius:10px; padding:11px 14px; color:var(--text); font-size:14px; font-family:'Inter',sans-serif;
   }
   .faq-search::placeholder{ color:var(--text-faint); }
-  .chip{ background:var(--surface-2); border:1px solid var(--line); color:var(--text-muted); font-size:12px; padding:6px 12px; border-radius:99px; cursor:pointer; }
-  .chip.active{ background:var(--accent-dim); color:var(--accent); border-color:transparent; }
+  .chip{ background:var(--surface-2); border:1px solid var(--line); color:var(--text-muted); font-size:12px; padding:6px 12px; border-radius:99px; cursor:pointer; transition:box-shadow .15s, border-color .15s, color .15s; }
+  .chip:hover{ border-color:rgba(110,231,220,0.4); color:var(--text); }
+  .chip.active{ background:var(--accent-dim); color:var(--accent); border-color:rgba(110,231,220,0.5); box-shadow:var(--glow-accent-soft); font-weight:600; }
   .faq-item{ background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden; }
   .faq-q{ padding:16px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:12px; font-size:14.5px; font-weight:500;}
   .faq-q .arrow{ color:var(--text-faint); transition:transform .2s; flex-shrink:0; }
@@ -191,6 +214,27 @@
   footer{ padding:40px 56px; color:var(--text-faint); font-size:12.5px; display:flex; align-items:center; gap:16px; }
   footer .footer-logo{ height:18px; width:auto; flex-shrink:0; }
 
+  /* Data tables */
+  .table-wrap{ overflow-x:auto; border-radius:12px; border:1px solid var(--line); }
+  table.info{ width:100%; border-collapse:collapse; font-size:13.5px; min-width:480px; }
+  table.info th{ background:var(--surface-3); color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; text-align:left; padding:10px 14px; white-space:nowrap; }
+  table.info td{ padding:11px 14px; border-top:1px solid var(--line); color:var(--text); vertical-align:top; }
+  table.info tr:nth-child(even) td{ background:rgba(255,255,255,0.015); }
+  table.info td.mono{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--accent); }
+
+  /* Screen reference cards */
+  .screen-card{ background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:0; overflow:hidden; }
+  .screen-illust{ display:block; width:100%; height:auto; background:var(--surface); border-bottom:1px solid var(--line); }
+  .screen-card .screen-body{ padding:14px 16px 16px; }
+  .screen-card .screen-tag{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--accent); background:var(--accent-dim); padding:2px 8px; border-radius:6px; margin-bottom:8px; }
+  .screen-card h4{ font-size:14px; font-family:'Inter',sans-serif; font-weight:600; margin-bottom:6px; }
+  .screen-card p{ font-size:13px; color:var(--text-muted); margin:0; }
+
+  /* Tier badges */
+  .tier-row{ display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px dashed var(--line); }
+  .tier-row:last-child{ border-bottom:none; }
+  .tier-gem{ width:38px; height:38px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; }
+
   @media (max-width:900px){
     .app{ flex-direction:column; }
     .sidebar{ width:100%; height:auto; position:relative; }
@@ -199,6 +243,27 @@
 </style>
 </head>
 <body>
+<div id="xp-bar-track"><div id="xp-bar-fill"></div></div>
+<svg width="0" height="0" style="position:absolute;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <symbol id="ph-avatar" viewBox="0 0 24 24">
+      <circle cx="12" cy="8.5" r="4"/>
+      <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7v1H4v-1Z"/>
+    </symbol>
+    <symbol id="ph-diamond" viewBox="0 0 24 24">
+      <path d="M4 9 L12 3 L20 9 L12 21 Z"/>
+    </symbol>
+    <symbol id="ph-play" viewBox="0 0 24 24">
+      <path d="M6 4 L20 12 L6 20 Z"/>
+    </symbol>
+    <symbol id="ph-chat" viewBox="0 0 24 24">
+      <path d="M3 4h18v13H8l-5 4V4Z"/>
+    </symbol>
+    <symbol id="ph-heart" viewBox="0 0 24 24">
+      <path d="M12 21s-7.5-4.6-10-9.3C0.4 8.3 2 4.8 5.6 4.2c2-0.3 3.8 0.6 4.9 2.2 1.1-1.6 2.9-2.5 4.9-2.2 3.6 0.6 5.2 4.1 3.6 7.5C19.5 16.4 12 21 12 21Z"/>
+    </symbol>
+  </defs>
+</svg>
 
 <div class="app">
   <aside class="sidebar">
@@ -211,12 +276,13 @@
     <nav class="toc" id="toc">
       <a href="#platform" data-key="platform"><span class="dot"></span>1. 平台是什麼</a>
       <a href="#appnav" data-key="appnav"><span class="dot"></span>2. App 介面與小遊戲</a>
-      <a href="#economy" data-key="economy"><span class="dot"></span>3. 鑽石經濟與 VIP</a>
-      <a href="#tools" data-key="tools"><span class="dot"></span>4. 客服後台工具箱</a>
-      <a href="#sop-account" data-key="sop-account"><span class="dot"></span>5. 帳號 / KYC / 騙點 SOP</a>
-      <a href="#sop-dispute" data-key="sop-dispute"><span class="dot"></span>6. 私下交易爭議 SOP</a>
-      <a href="#sop-payment" data-key="sop-payment"><span class="dot"></span>7. 儲值查單 / Bug SOP</a>
-      <a href="#faq" data-key="faq"><span class="dot"></span>8. 常見問題 FAQ</a>
+      <a href="#product" data-key="product"><span class="dot"></span>3. 帳號、下載與功能地圖</a>
+      <a href="#economy" data-key="economy"><span class="dot"></span>4. 鑽石經濟與 VIP</a>
+      <a href="#tools" data-key="tools"><span class="dot"></span>5. 客服後台工具箱</a>
+      <a href="#sop-account" data-key="sop-account"><span class="dot"></span>6. 帳號 / KYC / 騙點 SOP</a>
+      <a href="#sop-dispute" data-key="sop-dispute"><span class="dot"></span>7. 私下交易爭議 SOP</a>
+      <a href="#sop-payment" data-key="sop-payment"><span class="dot"></span>8. 儲值查單 / Bug SOP</a>
+      <a href="#faq" data-key="faq"><span class="dot"></span>9. 常見問題 FAQ</a>
     </nav>
   </aside>
 
@@ -232,7 +298,7 @@
     <!-- 1. PLATFORM -->
     <section class="block" id="platform">
       <div class="block-head">
-        <span class="block-eyebrow">01</span>
+        <span class="block-eyebrow">LV.01</span>
         <h2>平台是什麼</h2>
       </div>
       <p class="block-desc">SWAG 是一個直播與內容平台，站上有兩種主要角色：<strong>用戶（觀眾）</strong>與<strong>創作者（主播 / Swagger）</strong>。用戶透過站內貨幣「鑽石」觀看直播、解鎖內容、聊天與贈送禮物；創作者則透過經營直播與內容獲得收益分潤。客服每天處理的問題，幾乎都圍繞在「鑽石怎麼花的」與「主播和用戶之間發生了什麼」這兩件事上。</p>
@@ -277,7 +343,7 @@
     <!-- 1B. APP NAVIGATION -->
     <section class="block" id="appnav">
       <div class="block-head">
-        <span class="block-eyebrow">02</span>
+        <span class="block-eyebrow">LV.02</span>
         <h2>App 介面導覽與互動規則</h2>
       </div>
       <p class="block-desc">用戶回報「找不到功能」「按鈕沒反應」時，先知道每個分頁長什麼樣、東西放在哪，才不用每次都反問工程師。</p>
@@ -379,10 +445,476 @@
       </div>
     </section>
 
+    <!-- 1C. PRODUCT FULL MAP -->
+    <section class="block" id="product">
+      <div class="block-head">
+        <span class="block-eyebrow">LV.03</span>
+        <h2>帳號、下載與功能地圖</h2>
+      </div>
+      <p class="block-desc">這節是逐頁拆解版的產品知識庫——從用戶怎麼下載、怎麼註冊，到每個分頁按鈕的意思、每種功能扣多少鑽，全部整理成可以直接查的對照表。遇到用戶問「這顆按鈕是幹嘛的」「為什麼超商付款有上限」，先來這裡找答案。</p>
+
+      <div class="card">
+        <h3 class="card-title">下載與登入平台限制</h3>
+        <p class="muted">用戶常誤以為「找不到 App」是 Bug，其實是官方本來就沒有對應的 App。</p>
+        <div class="grid2">
+          <div class="screen-card">
+            <div class="screen-body">
+              <span class="screen-tag">iOS</span>
+              <h4>沒有 iOS App</h4>
+              <p>受限於蘋果官方政策，SWAG 官方不提供 iOS App。引導用戶以 Safari 瀏覽器開啟網站，並可透過分享按鈕「加入主畫面」做成類 App 的桌面圖示。桌面版不會自動更新，需提醒用戶點擊站內「神奇按鈕」手動更新。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-body">
+              <span class="screen-tag">Android</span>
+              <h4>Android App 已無更新計畫</h4>
+              <p>目前 Android App 沒有排入後續更新規劃，建議引導用戶改用 <strong>Chrome 瀏覽器</strong>開啟網站以取得最新功能與較穩定的使用體驗。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">年齡驗證與註冊流程</h3>
+        <p class="muted">未滿 18 歲的用戶在註冊階段就會被系統攔下，無法進入 SWAG 站台。</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div><h4>Email 註冊</h4><p>帳號限制：20 字內英文字母、數字或「.」「_」；密碼限制：6 位數以上英文加數字組合。</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div><h4>年齡驗證二選一</h4><p>依用戶是否持有信用卡分流：<strong>有信用卡</strong>→信用卡驗證；<strong>沒有信用卡</strong>→證件驗證（上傳身分證件由系統判讀）。</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div><h4>驗證完成，進站</h4><p>完成後直接進入首頁，並跳出提醒警語。未滿 18 歲會直接被系統擋下，無法完成註冊。</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">登入方式與帳號綁定規則</h3>
+        <p class="muted">這條規則客服要背下來，因為「登不進去」的案件有一半源自於用戶自己搞混了這個邏輯：<strong>每一種登入方式只能連結一個 SWAG ID，但一個 SWAG ID 可以同時綁定多種登入方式。</strong></p>
+        <div class="grid2">
+          <div class="screen-card">
+            <div class="screen-body">
+              <h4>可用的綁定方式</h4>
+              <p>收取驗證碼：電子郵件 / 電話號碼。連結帳號：Google、Apple ID、快速登入（Face ID 或指紋）。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-body">
+              <h4>為什麼一定要建議綁信箱</h4>
+              <p>綁定信箱可以額外獲得登入獎勵，且未來忘記密碼時能靠信箱找回帳號。若用戶完全沒綁信箱、也沒連結其他登入方式，一旦忘記密碼，帳號就<strong>真的救不回來</strong>——這點務必主動提醒新用戶。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">App 介面逐頁對照</h3>
+        <p class="muted">用戶說「某個頁面的某個東西」時，先用這張對照表定位是哪一頁、哪個元件。</p>
+        <div class="grid3" style="margin-top:14px;">
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<g>
+  <rect x="12" y="36" width="144" height="62" rx="8" fill="#262331"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="70" y="55" width="28" height="28" fill="#746C8C"/>
+  <rect x="18" y="42" width="34" height="12" rx="6" fill="#F2637A"/>
+  <rect x="164" y="36" width="144" height="62" rx="8" fill="#262331"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="222" y="55" width="28" height="28" fill="#746C8C"/>
+  <rect x="170" y="80" width="56" height="12" rx="6" fill="#3B7C78"/>
+  <rect x="12" y="106" width="144" height="62" rx="8" fill="#262331"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="70" y="125" width="28" height="28" fill="#746C8C"/>
+  <rect x="18" y="150" width="60" height="12" rx="6" fill="#2F2B3D"/>
+  <rect x="164" y="106" width="144" height="62" rx="8" fill="#262331"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="222" y="125" width="28" height="28" fill="#746C8C"/>
+  <rect x="170" y="150" width="48" height="12" rx="6" fill="#2F2B3D"/>
+</g>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">首頁 / Livestream</span>
+              <h4>主要入口集散地</h4>
+              <p>搜尋、聊天室、排行榜、通知、背包、鑽石、個人頁面。直播間會標示計費方式（如「180 鑽／分」）與剩餘票數（限時表演）。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<rect x="12" y="34" width="296" height="14" rx="7" fill="#262331"/>
+<use xlink:href="#ph-avatar" href="#ph-avatar" x="16" y="36" width="10" height="10" fill="#746C8C"/>
+<rect x="12" y="54" width="296" height="46" rx="8" fill="#3B7C78"/>
+<use xlink:href="#ph-play" href="#ph-play" x="144" y="66" width="22" height="22" fill="#6EE7DC"/>
+<g>
+  <rect x="12" y="108" width="70" height="60" rx="6" fill="#262331"/>
+  <rect x="90" y="108" width="70" height="60" rx="6" fill="#262331"/>
+  <rect x="168" y="108" width="70" height="60" rx="6" fill="#262331"/>
+  <rect x="246" y="108" width="62" height="60" rx="6" fill="#262331"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="34" y="126" width="24" height="24" fill="#746C8C"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="112" y="126" width="24" height="24" fill="#746C8C"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="190" y="126" width="24" height="24" fill="#746C8C"/>
+  <use xlink:href="#ph-avatar" href="#ph-avatar" x="264" y="126" width="24" height="24" fill="#746C8C"/>
+</g>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">影片 / Icon</span>
+              <h4>探索與分類</h4>
+              <p>搜尋欄位、Showcase（隨機從名單抽取曝光）、活動 Banner、熱門限動、影片列表，構成主要的內容探索區。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<rect x="12" y="34" width="296" height="14" rx="7" fill="#262331"/>
+<g>
+  <circle cx="28" cy="64" r="14" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="21" y="57" width="14" height="14" fill="#746C8C"/>
+  <circle cx="64" cy="64" r="14" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="57" y="57" width="14" height="14" fill="#746C8C"/>
+  <circle cx="100" cy="64" r="14" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="93" y="57" width="14" height="14" fill="#746C8C"/>
+  <circle cx="136" cy="64" r="14" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="129" y="57" width="14" height="14" fill="#746C8C"/>
+  <circle cx="172" cy="64" r="14" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="165" y="57" width="14" height="14" fill="#746C8C"/>
+</g>
+<rect x="12" y="90" width="296" height="78" rx="8" fill="#262331"/>
+<circle cx="30" cy="108" r="10" fill="#2F2B3D"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="25" y="103" width="10" height="10" fill="#746C8C"/>
+<rect x="46" y="102" width="70" height="8" rx="4" fill="#2F2B3D"/>
+<rect x="24" y="126" width="220" height="8" rx="4" fill="#2F2B3D"/>
+<rect x="24" y="140" width="180" height="8" rx="4" fill="#2F2B3D"/>
+<use xlink:href="#ph-heart" href="#ph-heart" x="24" y="152" width="12" height="12" fill="#F2637A"/>
+<use xlink:href="#ph-chat" href="#ph-chat" x="46" y="152" width="12" height="12" fill="#746C8C"/>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">動態頁面</span>
+              <h4>貼文動態牆</h4>
+              <p>搜尋欄位、被置頂的主播、貼文標題與內文，用戶追蹤的主播更新會顯示在這裡。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<rect x="12" y="34" width="296" height="14" rx="7" fill="#262331"/>
+<g>
+  <rect x="12" y="54" width="60" height="16" rx="8" fill="#3B7C78"/>
+  <rect x="78" y="54" width="60" height="16" rx="8" fill="#262331"/>
+  <rect x="144" y="54" width="60" height="16" rx="8" fill="#262331"/>
+  <rect x="210" y="54" width="60" height="16" rx="8" fill="#262331"/>
+</g>
+<g>
+  <rect x="12" y="80" width="296" height="28" rx="6" fill="#262331"/>
+  <rect x="20" y="88" width="24" height="12" rx="3" fill="#2F2B3D"/>
+  <rect x="52" y="88" width="140" height="6" rx="3" fill="#2F2B3D"/>
+  <rect x="52" y="98" width="90" height="6" rx="3" fill="#2F2B3D"/>
+  <rect x="12" y="114" width="296" height="28" rx="6" fill="#262331"/>
+  <rect x="20" y="122" width="24" height="12" rx="3" fill="#2F2B3D"/>
+  <rect x="52" y="122" width="160" height="6" rx="3" fill="#2F2B3D"/>
+  <rect x="52" y="132" width="100" height="6" rx="3" fill="#2F2B3D"/>
+  <rect x="12" y="148" width="296" height="20" rx="6" fill="#262331"/>
+  <rect x="20" y="154" width="24" height="8" rx="3" fill="#2F2B3D"/>
+  <rect x="52" y="154" width="120" height="6" rx="3" fill="#2F2B3D"/>
+</g>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">搜尋頁面</span>
+              <h4>四種搜尋入口</h4>
+              <p>可用關鍵字搜尋：影片標題、影片內文、Creators（主播帳號）、hashtag 標籤，影片與動態兩區都各自有獨立搜尋欄。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<circle cx="160" cy="60" r="26" fill="none" stroke="#F2637A" stroke-width="3"/>
+<circle cx="160" cy="60" r="21" fill="#262331"/>
+<use xlink:href="#ph-avatar" href="#ph-avatar" x="146" y="46" width="28" height="28" fill="#746C8C"/>
+<rect x="120" y="92" width="80" height="10" rx="5" fill="#262331"/>
+<rect x="90" y="106" width="140" height="7" rx="3.5" fill="#2F2B3D"/>
+<g>
+  <rect x="40" y="124" width="66" height="42" rx="6" fill="#262331"/>
+  <rect x="112" y="124" width="66" height="42" rx="6" fill="#262331"/>
+  <rect x="184" y="124" width="66" height="42" rx="6" fill="#262331"/>
+  <use xlink:href="#ph-play" href="#ph-play" x="66" y="138" width="14" height="14" fill="#746C8C"/>
+  <use xlink:href="#ph-play" href="#ph-play" x="138" y="138" width="14" height="14" fill="#746C8C"/>
+  <use xlink:href="#ph-play" href="#ph-play" x="210" y="138" width="14" height="14" fill="#746C8C"/>
+</g>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">主播個人頁面</span>
+              <h4>頭像燈號有意義</h4>
+              <p>主播 username、簡介、貼文（照片/影片）。頭像燈號：<span class="pill rose">紅圈</span>直播中、<span class="pill green">綠圈</span>有限動、無燈號則兩者皆無。點擊頭像會依燈號跳出對應選項（進直播間 / 看限動）。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<g>
+  <circle cx="30" cy="48" r="13" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="23" y="41" width="14" height="14" fill="#746C8C"/>
+  <rect x="52" y="40" width="90" height="7" rx="3.5" fill="#A79FBD" opacity="0.8"/>
+  <rect x="52" y="52" width="140" height="6" rx="3" fill="#2F2B3D"/>
+  <circle cx="300" cy="44" r="4" fill="white"/>
+
+  <circle cx="30" cy="80" r="13" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="23" y="73" width="14" height="14" fill="#746C8C"/>
+  <rect x="52" y="72" width="80" height="7" rx="3.5" fill="#A79FBD" opacity="0.8"/>
+  <rect x="52" y="84" width="120" height="6" rx="3" fill="#2F2B3D"/>
+  <circle cx="300" cy="76" r="4" fill="white"/>
+
+  <circle cx="30" cy="112" r="13" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="23" y="105" width="14" height="14" fill="#746C8C"/>
+  <rect x="52" y="104" width="100" height="7" rx="3.5" fill="#746C8C"/>
+  <rect x="52" y="116" width="90" height="6" rx="3" fill="#2F2B3D"/>
+  <circle cx="300" cy="108" r="4" fill="#746C8C"/>
+
+  <circle cx="30" cy="144" r="13" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="23" y="137" width="14" height="14" fill="#746C8C"/>
+  <rect x="52" y="136" width="110" height="7" rx="3.5" fill="#746C8C"/>
+  <rect x="52" y="148" width="70" height="6" rx="3" fill="#2F2B3D"/>
+  <circle cx="300" cy="140" r="4" fill="#746C8C"/>
+</g>
+<line x1="12" y1="64" x2="308" y2="64" stroke="#362F49" stroke-width="1"/>
+<line x1="12" y1="96" x2="308" y2="96" stroke="#362F49" stroke-width="1"/>
+<line x1="12" y1="128" x2="308" y2="128" stroke="#362F49" stroke-width="1"/>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">聊天室</span>
+              <h4>訊息狀態與功能鍵</h4>
+              <p>未讀白色／已讀淺灰色；可拍照錄影、贈禮、傳語音、傳圖片；可檢舉、封鎖、前往主播頁面；<strong>僅顯示 180 天內</strong>的對話紀錄，超過會被收起。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<circle cx="46" cy="58" r="20" fill="#262331"/><use xlink:href="#ph-avatar" href="#ph-avatar" x="34" y="46" width="24" height="24" fill="#746C8C"/>
+<rect x="78" y="44" width="90" height="9" rx="4.5" fill="#262331"/>
+<rect x="78" y="58" width="140" height="7" rx="3.5" fill="#2F2B3D"/>
+<rect x="78" y="70" width="100" height="7" rx="3.5" fill="#2F2B3D"/>
+<g>
+  <rect x="12" y="92" width="296" height="24" rx="6" fill="#262331"/>
+  <rect x="22" y="101" width="90" height="7" rx="3.5" fill="#A79FBD"/>
+  <path d="M292 100 l6 4 l-6 4" fill="none" stroke="#746C8C" stroke-width="1.5"/>
+  <rect x="12" y="120" width="296" height="24" rx="6" fill="#262331"/>
+  <rect x="22" y="129" width="110" height="7" rx="3.5" fill="#A79FBD"/>
+  <path d="M292 128 l6 4 l-6 4" fill="none" stroke="#746C8C" stroke-width="1.5"/>
+  <rect x="12" y="148" width="296" height="24" rx="6" fill="#262331"/>
+  <rect x="22" y="157" width="70" height="7" rx="3.5" fill="#A79FBD"/>
+  <path d="M292 156 l6 4 l-6 4" fill="none" stroke="#746C8C" stroke-width="1.5"/>
+</g>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">個人頁面 Me</span>
+              <h4>基本身分資訊</h4>
+              <p>頭像、SWAG ID、自我介紹，點選即可進入個人頁編輯。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<g>
+  <rect x="12" y="36" width="92" height="46" rx="7" fill="#262331"/>
+  <rect x="110" y="36" width="92" height="46" rx="7" fill="#262331"/>
+  <rect x="208" y="36" width="100" height="46" rx="7" fill="#262331"/>
+  <rect x="12" y="86" width="92" height="46" rx="7" fill="#262331"/>
+  <rect x="110" y="86" width="92" height="46" rx="7" fill="#262331"/>
+  <rect x="208" y="86" width="100" height="46" rx="7" fill="#262331"/>
+  <use xlink:href="#ph-diamond" href="#ph-diamond" x="20" y="44" width="14" height="14" fill="#6EE7DC"/>
+  <use xlink:href="#ph-diamond" href="#ph-diamond" x="118" y="44" width="14" height="14" fill="#6EE7DC"/>
+  <use xlink:href="#ph-diamond" href="#ph-diamond" x="216" y="44" width="14" height="14" fill="#6EE7DC"/>
+  <use xlink:href="#ph-diamond" href="#ph-diamond" x="20" y="94" width="14" height="14" fill="#6EE7DC"/>
+  <use xlink:href="#ph-diamond" href="#ph-diamond" x="118" y="94" width="14" height="14" fill="#6EE7DC"/>
+  <use xlink:href="#ph-diamond" href="#ph-diamond" x="216" y="94" width="14" height="14" fill="#6EE7DC"/>
+  <rect x="20" y="64" width="50" height="8" rx="4" fill="#2F2B3D"/>
+  <rect x="118" y="64" width="50" height="8" rx="4" fill="#2F2B3D"/>
+  <rect x="216" y="64" width="50" height="8" rx="4" fill="#2F2B3D"/>
+  <rect x="20" y="114" width="50" height="8" rx="4" fill="#2F2B3D"/>
+  <rect x="118" y="114" width="50" height="8" rx="4" fill="#2F2B3D"/>
+  <rect x="216" y="114" width="50" height="8" rx="4" fill="#2F2B3D"/>
+</g>
+<rect x="12" y="144" width="296" height="24" rx="12" fill="#3B7C78"/>
+<use xlink:href="#ph-diamond" href="#ph-diamond" x="150" y="150" width="12" height="12" fill="#6EE7DC"/>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">購買鑽石 Shop</span>
+              <h4>限制最多的一頁</h4>
+              <p>可切換幣別；一鍵支付需先完成 3D 驗證或新增信用卡；最高單筆面額 50,999 鑽，<strong>超商付款上限僅 14,999 鑽</strong>；登入獎勵要到「背包」領取，不會出現在購買頁。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <svg class="screen-illust" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="1" y="1" width="318" height="178" rx="12" fill="#1D1B26" stroke="#362F49" stroke-width="1.5"/>
+<rect x="1" y="1" width="318" height="26" rx="12" fill="#262331"/><rect x="1" y="14" width="318" height="13" fill="#262331"/><circle cx="20" cy="14" r="6" fill="#3B7C78"/><use xlink:href="#ph-diamond" href="#ph-diamond" x="15" y="9" width="10" height="10" fill="#6EE7DC"/><circle cx="224" cy="17" r="5" fill="#2F2B3D"/><circle cx="238" cy="17" r="5" fill="#2F2B3D"/><circle cx="252" cy="17" r="5" fill="#2F2B3D"/><circle cx="266" cy="17" r="5" fill="#2F2B3D"/><circle cx="280" cy="17" r="5" fill="#2F2B3D"/><circle cx="294" cy="17" r="5" fill="#2F2B3D"/>
+<g>
+  <rect x="12" y="38" width="40" height="6" rx="3" fill="#746C8C"/>
+  <rect x="12" y="50" width="296" height="22" rx="5" fill="#262331"/>
+  <rect x="22" y="58" width="100" height="7" rx="3.5" fill="#A79FBD"/>
+  <path d="M292 57 l6 4 l-6 4" fill="none" stroke="#746C8C" stroke-width="1.5"/>
+</g>
+<g>
+  <rect x="12" y="82" width="40" height="6" rx="3" fill="#746C8C"/>
+  <rect x="12" y="94" width="296" height="22" rx="5" fill="#262331"/>
+  <rect x="22" y="102" width="80" height="7" rx="3.5" fill="#A79FBD"/>
+  <path d="M292 101 l6 4 l-6 4" fill="none" stroke="#746C8C" stroke-width="1.5"/>
+  <rect x="12" y="120" width="296" height="22" rx="5" fill="#262331"/>
+  <rect x="22" y="128" width="90" height="7" rx="3.5" fill="#A79FBD"/>
+  <path d="M292 127 l6 4 l-6 4" fill="none" stroke="#746C8C" stroke-width="1.5"/>
+</g>
+<g>
+  <rect x="12" y="152" width="40" height="6" rx="3" fill="#746C8C"/>
+  <rect x="12" y="164" width="296" height="8" rx="4" fill="#262331"/>
+</g>
+</svg>
+            <div class="screen-body">
+              <span class="screen-tag">設定 Settings</span>
+              <h4>帳號層級的管理入口</h4>
+              <p>管理個人資料、連結商城、推薦碼兌換、切換語系（目前僅全球版）、服務條款/隱私權政策、刪除帳號。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">購買鑽石頁常見卡關點</h3>
+        <p class="muted">用戶回報「付不了款」時，先對照這幾個已知限制，很多時候不是 Bug，是規則本身如此。</p>
+        <ul class="tidy">
+          <li><strong>付款方式限額不同：</strong>信用卡 / 超商 / ATM / 電信小額，各自有獨立的限購額度，超商最高只能到 14,999 鑽（信用卡等其他管道可到 50,999）。</li>
+          <li><strong>上一筆未成功會鎖 15 分鐘：</strong>畫面會跳出「請等候 15 分鐘」的警語，這是系統防止重複扣款的機制，不是帳號異常。</li>
+          <li><strong>未開通付款方式：</strong>畫面會跳出「聯繫客服」的警語，代表用戶的帳號 / 地區尚未開通該付款方式，需要客服協助確認可用管道。</li>
+          <li><strong>登入獎勵不在購買頁：</strong>用戶如果在購買頁找不到登入獎勵，引導他去「背包」查看，這是設計上的分流，不是遺失。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">內容型態耗鑽對照表</h3>
+        <p class="muted">用戶質疑「怎麼解鎖一次扣這麼多鑽」時，可以用這張表快速說明各類型內容的合理定價區間。</p>
+        <div class="table-wrap">
+          <table class="info">
+            <thead>
+              <tr><th>功能</th><th>規則說明</th><th>鑽石區間</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>限時動態 Story</td><td>主播發布並通過審核後，上架 48 小時即下架（仍可被搜尋到）</td><td class="mono">0 - 240 鑽</td></tr>
+              <tr><td>貼文 / 長片影片</td><td>含照片或影片，內容長度需介於 3 分～60 分鐘</td><td class="mono">0 - 2,000 鑽（後台上限 50,000）</td></tr>
+              <tr><td>私密直播（一對多）</td><td>依觀看分鐘數計費</td><td class="mono">180 鑽／分（預設）</td></tr>
+              <tr><td>限時表演</td><td>早鳥票與開演後票價不同</td><td class="mono">早鳥 1,200 鑽／開演後 1,800 鑽</td></tr>
+              <tr><td>私訊 / 聊天室訊息</td><td>依主播設置，按句收費</td><td class="mono">100 - 10,000 鑽</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">限動 vs 貼文，用戶最常搞混的兩種內容</h3>
+        <div class="table-wrap">
+          <table class="info">
+            <thead>
+              <tr><th></th><th>限時動態 Story</th><th>貼文 Post</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>存在時間</td><td>48 小時</td><td>永久</td></tr>
+              <tr><td>販售價格</td><td class="mono">0 - 240 鑽</td><td class="mono">0 - 最高 2,000 鑽</td></tr>
+              <tr><td>內容長短</td><td>30 - 60 秒</td><td>3 分 - 60 分鐘</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">限時表演完整機制</h3>
+        <p class="muted">這是「免費直播」與「私密直播」之間的產品區隔，主播可自由選擇公開或私密募票。</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div><h4>主播設定表演</h4><p>開播前設定表演內容、時間，並公開募集票券，公開/私密皆可募票。</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div><h4>用戶購票</h4><p>用戶可購買早鳥票（1,200 鑽／張）或開演後的一般票（1,800 鑽／張），不限購買一張，也可以直接「馬上達標」加速開演。</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div><h4>依募票結果分流</h4><p><strong>募集成功：</strong>表演開始，已購票用戶可全程免費觀看，中途離開再進來也不用重複付費。<strong>募集失敗：</strong>系統會詢問是否有人願意加購湊滿票數；若真的失敗，主播可選擇照常表演或取消（取消則票券鑽石全額退回）。</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div><h4>異常情況一律退鑽</h4><p>表演尚未結束就斷線、或募集未成功且主播選擇不表演，鑽石都會全額退回用戶，這兩種都不需要用戶額外申請。</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">封鎖機制的完整眉角</h3>
+        <p class="muted">「封鎖 vs 禁言」的基本差異在第 2 節已經講過，這裡補充封鎖生效後最容易被用戶問倒的細節。</p>
+        <ul class="tidy">
+          <li>A 封鎖 B 後，B 在雙方聊天室無法打字，前端只會顯示通用錯誤「哎呀！什麼東西出錯了」——這也是為什麼很多用戶會誤以為是 Bug 來申報。</li>
+          <li>A 封鎖 B 後，<strong>A 仍可以主動傳訊息給 B</strong>（包含 auto chat），除非 B 也反過來封鎖 A；但 B 沒辦法回覆、送禮、購票、進入 A 的私密直播或限時表演。</li>
+          <li>B 無法解鎖 A 的任何長片影片或限動；封鎖之前已解鎖的內容還能看到，但畫面會顯示同樣的通用錯誤；封鎖之後這些內容也不會再出現在列表中。</li>
+          <li>A 封鎖 B 的當下，雙方會自動互相 unfollow；解除封鎖後，被隱藏期間的內容才會重新出現。</li>
+          <li><strong>封鎖名單上限 1,000 筆</strong>，依時間新到舊排序；滿額後再封鎖新用戶，會自動頂替掉最舊的一筆。查詢時，被封鎖方的帳號會被標記 <code class="mono" style="background:none;">blocked-by:&lt;對方 SWAG ID&gt;</code> 的 tag，可用來反查是誰封鎖的。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">系統 Tag 對照表</h3>
+        <p class="muted">後台查帳號時常會看到這些標記，客服不一定要會下 tag，但要看得懂代表什麼狀態。</p>
+        <div class="table-wrap">
+          <table class="info">
+            <thead>
+              <tr><th>Tag</th><th>定義 / 狀態</th><th>適用對象</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">shop:verified</td><td>已通過年齡驗證，開通超商／轉帳付款功能，並可預覽無碼內容</td><td>一般用戶</td></tr>
+              <tr><td class="mono">banned</td><td>立即登出、無法再登入</td><td>用戶（違規）／主播（不再經營）</td></tr>
+              <tr><td class="mono">hidden</td><td>不會出現在任何公開頁面（含搜尋），SWAG ID 顯示為 a*****b，頭像拉黑，但仍可發文與回覆訊息</td><td>主播 / 貼文 / 限動</td></tr>
+              <tr><td class="mono">uploader:chat</td><td>擁有聊天室上傳檔案的權限（非每位主播都有）</td><td>主播</td></tr>
+              <tr><td class="mono">suspicious / disturbing:mark</td><td>帳號操作異常、疑似有內容外流嫌疑（觀看長片畫面黑屏或亂跳）</td><td>用戶</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">聊天室功能跨平台差異</h3>
+        <p class="muted">這塊規則已經改版：現在 Web、App、PWA 三種使用方式的聊天室功能<strong>完全一致</strong>（拍照、錄影、上傳圖片/影片、語音都支援），用戶說「某個版本少了按鈕」多半是誤會或個案問題，不是平台限定功能。唯一真正的差異是<strong>通知功能</strong>。</p>
+        <div class="table-wrap">
+          <table class="info">
+            <thead>
+              <tr><th>使用方式</th><th>拍照 / 錄影 / 上傳 / 語音</th><th>推播通知</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Web（瀏覽器直接開啟）</td><td>✅ 皆支援</td><td>—</td></tr>
+              <tr><td>App（iOS / Android）</td><td>✅ 皆支援</td><td>—</td></tr>
+              <tr><td>PWA（加入主畫面的桌面捷徑）</td><td>✅ 皆支援</td><td>✅ 僅此方式支援</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:10px;">用戶想收到訊息通知，卻用一般瀏覽器分頁開啟網站，是收不到推播的——要引導他透過分享按鈕「加入主畫面」做成 PWA 桌面捷徑，才能開啟通知功能。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">對外聯繫窗口</h3>
+        <p class="muted">用戶或潛在合作對象問到非客服業務範圍的問題時，直接給對應信箱，不要自己接下來處理。</p>
+        <div class="table-wrap">
+          <table class="info">
+            <thead>
+              <tr><th>詢問事項</th><th>聯繫信箱</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>想成為主播</td><td class="mono">talents@swag.live</td></tr>
+              <tr><td>合作 / 廣告需求</td><td class="mono">marketing@swag.live</td></tr>
+              <tr><td>投訴</td><td class="mono">support@swag.live</td></tr>
+              <tr><td>新聞採訪</td><td class="mono">pr@swag.live</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- 2. ECONOMY -->
     <section class="block" id="economy">
       <div class="block-head">
-        <span class="block-eyebrow">03</span>
+        <span class="block-eyebrow">LV.04</span>
         <h2>鑽石經濟與 VIP 制度</h2>
       </div>
       <p class="block-desc">幾乎所有「退款」「沒收到」「儲值」類進線，最後都要回到這一節的概念。記熟它，能讓你在對話中快速判斷這筆爭議「歸不歸平台管」。</p>
@@ -436,7 +968,7 @@
     <!-- 3. TOOLS -->
     <section class="block" id="tools">
       <div class="block-head">
-        <span class="block-eyebrow">04</span>
+        <span class="block-eyebrow">LV.05</span>
         <h2>客服後台工具箱</h2>
       </div>
       <p class="block-desc">正式上線前，你至少要能講清楚這四個工具「各自負責什麼」。實際帳密與權限請洽客服部主管開通。</p>
@@ -468,9 +1000,31 @@
       <div class="card">
         <div class="tool-card">
           <span class="tool-key">03</span>
-          <div>
+          <div style="width:100%;">
             <h3 class="card-title">Mixpanel — 事件與訂單紀錄查詢</h3>
             <p class="muted">用來核對「這筆交易到底有沒有真的發生」，例如查 <code>points.deposited</code>（鑽石入帳事件）確認人工發鑽是否成功。查詢時務必鎖定「事件發生當天」的日期區間，不能用預設的 today，否則會查不到舊案件的紀錄。</p>
+            <div class="table-wrap" style="margin-top:14px;">
+              <table class="info">
+                <thead>
+                  <tr><th>類別</th><th>Event</th><th>定義</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>訂單</td><td class="mono">payment.succeeded</td><td>訂單購買成功，日誌顯示「購買 XXX 方案」</td></tr>
+                  <tr><td>訂單</td><td class="mono">order.created</td><td>用戶選擇方案並點擊付款，但尚未完成付款</td></tr>
+                  <tr><td>訂單</td><td class="mono">payment.refunded</td><td>用戶自行申請退刷（僅適用特定金流商）</td></tr>
+                  <tr><td>鑽石</td><td class="mono">points.deposited</td><td>訂單成立後鑽石入帳，日誌顯示「獲得鑽石」</td></tr>
+                  <tr><td>鑽石</td><td class="mono">points.withdrawn</td><td>退刷收回鑽石，或官方收回誤發鑽石</td></tr>
+                  <tr><td>解鎖</td><td class="mono">message.unlocked</td><td>解鎖付費內容，日誌顯示「XXX 解鎖 XXX 的訊息」</td></tr>
+                  <tr><td>聊天室</td><td class="mono">message.sent</td><td>用戶傳送訊息（文字／語音）給主播</td></tr>
+                  <tr><td>聊天室</td><td class="mono">gift.sent</td><td>贈送禮物給主播，日誌顯示「XXX 給 XXX 禮物」</td></tr>
+                  <tr><td>直播間</td><td class="mono">stream.viewed</td><td>觀看私密直播（180 鑽／分）</td></tr>
+                  <tr><td>直播間</td><td class="mono">livestream.stream-authorized</td><td>直播授權成功——需搭配下一項才代表真的進入直播間</td></tr>
+                  <tr><td>直播間</td><td class="mono">livestream.token-got</td><td>取得直播 token，與授權事件合併確認才算成功進場</td></tr>
+                  <tr><td>直播間</td><td class="mono">livestream.payment</td><td>限時表演的購票紀錄</td></tr>
+                  <tr><td>優惠碼</td><td class="mono">referral.redeemed / referral.rewarded</td><td>用戶綁定的優惠碼，及獎勵是否已發送</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -489,7 +1043,7 @@
     <!-- 3B. ACCOUNT / KYC / REPORT SOP -->
     <section class="block" id="sop-account">
       <div class="block-head">
-        <span class="block-eyebrow">05</span>
+        <span class="block-eyebrow">LV.06</span>
         <h2>帳號協尋、KYC 驗證、騙點申報 SOP</h2>
       </div>
       <p class="block-desc">這三種是新人最早會獨立處理的進線類型：用戶登不進去、要驗證身分、覺得被主播騙了。三種都有明確的判斷順序，照著走就不容易出錯。</p>
@@ -580,7 +1134,7 @@
     <!-- 4. DISPUTE SOP -->
     <section class="block" id="sop-dispute">
       <div class="block-head">
-        <span class="block-eyebrow">06</span>
+        <span class="block-eyebrow">LV.07</span>
         <h2>私下交易爭議處理 SOP</h2>
       </div>
       <p class="block-desc">這是新人最容易判斷錯誤的一條 SOP，也是最常遇到的爭議類型：用戶或主播投訴「私下轉帳、收現、約會沒履行」。核心心法是兩條獨立的軸線——<strong>退鑽看比例，懲處看事實</strong>。下面直接練習判斷。</p>
@@ -642,7 +1196,7 @@
     <!-- 5. PAYMENT & BUG SOP -->
     <section class="block" id="sop-payment">
       <div class="block-head">
-        <span class="block-eyebrow">07</span>
+        <span class="block-eyebrow">LV.08</span>
         <h2>儲值查單 / 一般 Bug 處理 SOP</h2>
       </div>
       <p class="block-desc">用戶「已扣款但沒收到鑽石」是每天都會遇到的高頻問題。核心原則：<strong>先在 Mixpanel 與 Slack 對帳，確認金流狀態，再決定是否需要到 Telegram 群組向金流商查單。</strong></p>
@@ -681,6 +1235,30 @@
             <div><h4>等待金流端回覆再處理</h4><p>查單結果出來前不承諾補鑽時間，僅告知「已提交查詢，有結果會主動通知」。</p></div>
           </div>
         </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Mixpanel 金流渠道對照表</h3>
+        <p class="muted">Mixpanel 訂單資料裡的金流欄位是代號，查單前要先知道它對應哪一家、該去哪個 Telegram 群組核帳。</p>
+        <div class="table-wrap">
+          <table class="info">
+            <thead>
+              <tr><th>Mixpanel 欄位</th><th>對應金流商</th><th>用途 / 收款方式</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">happypay</td><td>JoyLucky</td><td>台幣電信付款／Web ATM；人民幣走銀聯卡</td></tr>
+              <tr><td class="mono">securionpay</td><td>Securionpay</td><td>多國貨幣付款，含台幣信用卡與一鍵支付</td></tr>
+              <tr><td class="mono">spgateway</td><td>藍新金流</td><td>商店點數經銷商：ATM／超商代繳</td></tr>
+              <tr><td class="mono">tappay</td><td>Tappay 喬睿</td><td>Apple Pay（藍新商店收單）、舊版一鍵支付</td></tr>
+              <tr><td class="mono">vip</td><td>91APP</td><td>手續費較低，商店點數經銷商直購</td></tr>
+              <tr><td class="mono">xanpay</td><td>xanpay</td><td>主要涵蓋東南亞幣別</td></tr>
+              <tr><td class="mono">tiger</td><td>老虎</td><td>人民幣收 U 回來</td></tr>
+              <tr><td class="mono">skpay</td><td>SKPay</td><td>越南盾，支付當地相關費用</td></tr>
+              <tr><td class="mono">momo / zola</td><td>TRX</td><td>需走專屬查帳流程</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:10px;">⚠️ 部分金流商目前已暫停使用（如「聲響」人民幣代收），查到停用中的渠道要先跟主管確認現況，不要直接引導用戶走該管道付款。</p>
       </div>
 
       <div class="card">
@@ -764,7 +1342,7 @@
     <!-- 6. FAQ -->
     <section class="block" id="faq">
       <div class="block-head">
-        <span class="block-eyebrow">08</span>
+        <span class="block-eyebrow">LV.09</span>
         <h2>常見問題 FAQ</h2>
       </div>
       <p class="block-desc">整理自用戶端與主播端的 FAQ 資料庫，用來練習「看到關鍵字就能反射回答」。可以用搜尋框或標籤篩選。</p>
@@ -785,8 +1363,20 @@
 </div>
 
 <script>
+/* ---------- XP progress bar ---------- */
+const xpFill = document.getElementById('xp-bar-fill');
+function updateXpBar(){
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+  xpFill.style.width = pct + '%';
+}
+window.addEventListener('scroll', updateXpBar, { passive: true });
+window.addEventListener('resize', updateXpBar);
+updateXpBar();
+
 /* ---------- Scroll spy ---------- */
-const sections = ['platform','appnav','economy','tools','sop-account','sop-dispute','sop-payment','faq'];
+const sections = ['platform','appnav','product','economy','tools','sop-account','sop-dispute','sop-payment','faq'];
 const tocLinks = document.querySelectorAll('#toc a');
 
 const spyObserver = new IntersectionObserver((entries)=>{
