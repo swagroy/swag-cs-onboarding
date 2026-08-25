@@ -363,6 +363,18 @@
       </div>
 
       <div class="card">
+        <h3 class="card-title">一對一私密直播</h3>
+        <p class="muted">用戶質疑「一對一被亂扣鑽」時，先照這個扣款規則核對，多數落差都能用「預扣機制」直接解釋。</p>
+        <ul class="tidy">
+          <li>發起時<strong>一次性預扣 5 分鐘鑽石</strong>。</li>
+          <li><strong>主播接受：</strong>預扣鑽石轉為前 5 分鐘觀看費用；自第 6 分鐘起，於當前分鐘倒數剩約 25 秒時預扣下一分鐘，之後每分鐘依此規律扣除，直到用戶離開直播間為止。</li>
+          <li><strong>主播拒絕或逾時未回應：</strong>預扣鑽石自動退回用戶的帳號餘額，並記錄於日誌。</li>
+          <li>一對一可進行雙向視訊，此模式需開啟鏡頭與麥克風權限，請確保已授權 SWAG 使用裝置的「相機與麥克風」。若連線時無畫面或聲音，請參考 <a href="https://public.swag.live/help-center/zh-tw/articles/e14361ff-bbf5-4bb8-88f1-855630d86f54-%E5%A6%82%E4%BD%95%E5%85%81%E8%A8%B1%E9%8F%A1%E9%A0%AD%E5%92%8C%E9%BA%A5%E5%85%8B%E9%A2%A8%E6%AC%8A%E9%99%90/index.html" target="_blank" rel="noopener">如何允許鏡頭和麥克風權限？</a> 進行確認。</li>
+        </ul>
+        <p class="muted" style="margin-top:12px;">💡 <strong>小提醒｜為什麼日誌上的扣鑽時間看起來有點差？</strong>系統採「當前分鐘結束前先預扣下一分鐘」的機制，加上裝置時間與伺服器可能不同步、或網路延遲等因素，日誌記錄的時間有時會比實際扣款時間略晚。前後誤差在 20 秒內皆屬正常範圍，不影響實際扣鑽金額。</p>
+      </div>
+
+      <div class="card">
         <h3 class="card-title">封鎖 vs 禁言，影響範圍完全不同</h3>
         <p class="muted">這兩個很常被用戶搞混，客服要能秒答差在哪：<strong>禁言</strong>只影響「當下這個直播間」，時間 5 分鐘到永久不等；<strong>封鎖</strong>則是「跟這個主播的所有互動」全部斷絕，且是永久性的。</p>
         <div class="grid2" style="margin-top:14px;">
@@ -385,7 +397,7 @@
             </ul>
           </div>
         </div>
-        <p class="muted" style="margin-top:12px;">用戶與主播都可以自由使用封鎖功能，官方不介入、也不代為解除。用戶在封鎖狀態下嘗試操作，前端只會顯示通用錯誤「哎呀！什麼東西出錯了」，不會明說是被封鎖——這也是為什麼用戶常誤以為是 Bug 來回報。</p>
+        <p class="muted" style="margin-top:12px;">用戶與主播都可以自由使用封鎖功能，官方不介入、也不代為解除。用戶在封鎖狀態下嘗試操作，前端會顯示明確訊息「無法向封鎖你的使用者傳送訊息」——訊息已經寫明是封鎖，但用戶還是可能會來反應封鎖的狀況。唯一特例是看起來像主播不小心誤觸封鎖，這類情況可請 TM 單位向主播確認。</p>
       </div>
 
       <div class="card">
@@ -431,20 +443,34 @@
 
       <div class="card">
         <h3 class="card-title">下載與登入平台限制</h3>
-        <p class="muted">用戶常誤以為「找不到 App」是 Bug，其實是官方本來就沒有對應的 App。</p>
-        <div class="grid2">
+        <p class="muted">目前無下載——SWAG 沒有上架任何 App Store 或 Google Play 的官方 App。用戶如果說「我在商城下載到 SWAG App」，那個<strong>是假的</strong>，不是官方版本，務必提醒用戶不要安裝來路不明的 App。</p>
+        <div class="grid3" style="margin-top:14px;">
           <div class="screen-card">
             <div class="screen-body">
               <span class="screen-tag">iOS</span>
               <h4>沒有 iOS App</h4>
-              <p>受限於蘋果官方政策，SWAG 官方不提供 iOS App。引導用戶以 Safari 瀏覽器開啟網站，並可透過分享按鈕「加入主畫面」做成類 App 的桌面圖示。桌面版不會自動更新，需提醒用戶點擊站內「神奇按鈕」手動更新。</p>
+              <p>受限於蘋果官方政策，SWAG 官方不提供 iOS App。App Store 上如果搜得到類似名稱的 App，都<strong>不是官方版本</strong>。</p>
             </div>
           </div>
           <div class="screen-card">
             <div class="screen-body">
-              <span class="screen-tag">Android</span>
-              <h4>Android App 已無更新計畫</h4>
-              <p>目前 Android App 沒有排入後續更新規劃，建議引導用戶改用 <strong>Chrome 瀏覽器</strong>開啟網站以取得最新功能與較穩定的使用體驗。</p>
+              <span class="screen-tag">WEB 網頁版</span>
+              <h4>建議 Safari / Chrome 開啟</h4>
+              <p>直接用瀏覽器開啟網站即可使用，<strong>有支援瀏覽器通知功能</strong>。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-body">
+              <span class="screen-tag">MDM</span>
+              <h4>對內俗稱「App」</h4>
+              <p>用戶口中的「App」其實是 MDM 安裝方式，<strong>不支援通知功能</strong>。</p>
+            </div>
+          </div>
+          <div class="screen-card">
+            <div class="screen-body">
+              <span class="screen-tag">PWA</span>
+              <h4>對內俗稱「桌面捷徑」</h4>
+              <p>透過瀏覽器分享按鈕「加入主畫面」建立的桌面捷徑，<strong>有支援通知功能</strong>，是唯一能收到推播的使用方式。</p>
             </div>
           </div>
         </div>
@@ -754,7 +780,7 @@
         <h3 class="card-title">購買鑽石頁常見卡關點</h3>
         <p class="muted">用戶回報「付不了款」時，先對照這幾個已知限制，很多時候不是 Bug，是規則本身如此。</p>
         <ul class="tidy">
-          <li><strong>付款方式限額不同：</strong>信用卡 / 超商 / ATM / 電信小額，各自有獨立的限購額度，超商最高只能到 14,999 鑽（信用卡等其他管道可到 50,999）。</li>
+          <li><strong>付款方式限額不同：</strong>信用卡 / 超商 / ATM / 電信小額，各自有獨立的限購額度，超商最高只能到 14,999 鑽、ATM 轉帳限購 49,999 以下方案（信用卡等其他管道可到 50,999）。</li>
           <li><strong>上一筆未成功會鎖 15 分鐘：</strong>畫面會跳出「請等候 15 分鐘」的警語，這是系統防止重複扣款的機制，不是帳號異常。</li>
           <li><strong>未開通付款方式：</strong>畫面會跳出「聯繫客服」的警語，代表用戶的帳號 / 地區尚未開通該付款方式，需要客服協助確認可用管道。</li>
           <li><strong>登入獎勵不在購買頁：</strong>用戶如果在購買頁找不到登入獎勵，引導他去「背包」查看，這是設計上的分流，不是遺失。</li>
@@ -823,9 +849,10 @@
         <h3 class="card-title">封鎖機制的完整眉角</h3>
         <p class="muted">「封鎖 vs 禁言」的基本差異在第 2 節已經講過，這裡補充封鎖生效後最容易被用戶問倒的細節。</p>
         <ul class="tidy">
-          <li>A 封鎖 B 後，B 在雙方聊天室無法打字，前端只會顯示通用錯誤「哎呀！什麼東西出錯了」——這也是為什麼很多用戶會誤以為是 Bug 來申報。</li>
+          <li>A 封鎖 B 後，B 在雙方聊天室無法傳送訊息，前端會顯示明確訊息「<strong>無法向封鎖你的使用者傳送訊息</strong>」。訊息已經寫明是封鎖，但用戶還是可能會來反應封鎖的狀況，不一定是誤會。</li>
+          <li><strong>唯一的特例</strong>：如果情況看起來像主播不小心誤觸封鎖（例如查看對話紀錄，雙方原本談得好好的、看起來有共識，卻忽然被封鎖），這類情況可以請 <strong>TM 單位</strong>向主播確認是否為誤觸，不要直接當作用戶單方面認知錯誤處理。</li>
           <li>A 封鎖 B 後，<strong>A 仍可以主動傳訊息給 B</strong>（包含 auto chat），除非 B 也反過來封鎖 A；但 B 沒辦法回覆、送禮、購票、進入 A 的私密直播或限時表演。</li>
-          <li>B 無法解鎖 A 的任何長片影片或限動；封鎖之前已解鎖的內容還能看到，但畫面會顯示同樣的通用錯誤；封鎖之後這些內容也不會再出現在列表中。</li>
+          <li>B 無法解鎖 A 的任何長片影片或限動；封鎖之前已解鎖的內容還能看到，但畫面會顯示同樣「無法向封鎖你的使用者傳送訊息」的提示；封鎖之後這些內容也不會再出現在列表中。</li>
           <li>A 封鎖 B 的當下，雙方會自動互相 unfollow；解除封鎖後，被隱藏期間的內容才會重新出現。</li>
           <li><strong>封鎖名單上限 1,000 筆</strong>，依時間新到舊排序；滿額後再封鎖新用戶，會自動頂替掉最舊的一筆。查詢時，被封鎖方的帳號會被標記 <code class="mono" style="background:none;">blocked-by:&lt;對方 SWAG ID&gt;</code> 的 tag，可用來反查是誰封鎖的。</li>
         </ul>
@@ -843,7 +870,6 @@
               <tr><td class="mono">shop:verified</td><td>已通過年齡驗證，開通超商／轉帳付款功能，並可預覽無碼內容</td><td>一般用戶</td></tr>
               <tr><td class="mono">banned</td><td>立即登出、無法再登入</td><td>用戶（違規）／主播（不再經營）</td></tr>
               <tr><td class="mono">hidden</td><td>不會出現在任何公開頁面（含搜尋），SWAG ID 顯示為 a*****b，頭像拉黑，但仍可發文與回覆訊息</td><td>主播 / 貼文 / 限動</td></tr>
-              <tr><td class="mono">uploader:chat</td><td>擁有聊天室上傳檔案的權限（非每位主播都有）</td><td>主播</td></tr>
               <tr><td class="mono">suspicious / disturbing:mark</td><td>帳號操作異常、疑似有內容外流嫌疑（觀看長片畫面黑屏或亂跳）</td><td>用戶</td></tr>
             </tbody>
           </table>
@@ -852,20 +878,20 @@
 
       <div class="card">
         <h3 class="card-title">聊天室功能跨平台差異</h3>
-        <p class="muted">這塊規則已經改版：現在 Web、App、PWA 三種使用方式的聊天室功能<strong>完全一致</strong>（拍照、錄影、上傳圖片/影片、語音都支援），用戶說「某個版本少了按鈕」多半是誤會或個案問題，不是平台限定功能。唯一真正的差異是<strong>通知功能</strong>。</p>
+        <p class="muted">現在 Web、MDM、PWA 三種使用方式的聊天室功能<strong>完全一致</strong>（拍照、錄影、上傳圖片/影片、語音都支援），用戶說「某個版本少了按鈕」多半是誤會或個案問題，不是平台限定功能。唯一真正的差異是<strong>通知功能</strong>：MDM（用戶口中的「App」）不支援，Web 與 PWA 都支援。</p>
         <div class="table-wrap">
           <table class="info">
             <thead>
               <tr><th>使用方式</th><th>拍照 / 錄影 / 上傳 / 語音</th><th>推播通知</th></tr>
             </thead>
             <tbody>
-              <tr><td>Web（瀏覽器直接開啟）</td><td>✅ 皆支援</td><td>—</td></tr>
-              <tr><td>App（iOS / Android）</td><td>✅ 皆支援</td><td>—</td></tr>
-              <tr><td>PWA（加入主畫面的桌面捷徑）</td><td>✅ 皆支援</td><td>✅ 僅此方式支援</td></tr>
+              <tr><td>WEB（Safari / Chrome 直接開啟）</td><td>✅ 皆支援</td><td>✅ 支援</td></tr>
+              <tr><td>MDM（用戶口中的「App」）</td><td>✅ 皆支援</td><td>— 不支援</td></tr>
+              <tr><td>PWA（加入主畫面的桌面捷徑）</td><td>✅ 皆支援</td><td>✅ 支援</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="muted" style="margin-top:10px;">用戶想收到訊息通知，卻用一般瀏覽器分頁開啟網站，是收不到推播的——要引導他透過分享按鈕「加入主畫面」做成 PWA 桌面捷徑，才能開啟通知功能。</p>
+        <p class="muted" style="margin-top:10px;">用戶想收到訊息通知，卻用 MDM 安裝方式使用，是收不到推播的——引導他改用瀏覽器直接開啟，或透過分享按鈕「加入主畫面」做成 PWA 桌面捷徑，這兩種都能收到通知。</p>
       </div>
 
       <div class="card">
@@ -1222,19 +1248,19 @@
               <tr><th>Mixpanel 欄位</th><th>對應金流商</th><th>用途 / 收款方式</th></tr>
             </thead>
             <tbody>
-              <tr><td class="mono">happypay</td><td>JoyLucky</td><td>台幣電信付款／Web ATM；人民幣走銀聯卡</td></tr>
-              <tr><td class="mono">securionpay</td><td>Securionpay</td><td>多國貨幣付款，含台幣信用卡與一鍵支付</td></tr>
-              <tr><td class="mono">spgateway</td><td>藍新金流</td><td>商店點數經銷商：ATM／超商代繳</td></tr>
-              <tr><td class="mono">tappay</td><td>Tappay 喬睿</td><td>Apple Pay（藍新商店收單）、舊版一鍵支付</td></tr>
-              <tr><td class="mono">vip</td><td>91APP</td><td>手續費較低，商店點數經銷商直購</td></tr>
+              <tr><td class="mono">happypay</td><td>JoyLucky</td><td>LINE Pay</td></tr>
+              <tr><td class="mono">spgateway</td><td>藍新金流</td><td>轉帳、超商</td></tr>
               <tr><td class="mono">xanpay</td><td>xanpay</td><td>主要涵蓋東南亞幣別</td></tr>
-              <tr><td class="mono">tiger</td><td>老虎</td><td>人民幣收 U 回來</td></tr>
-              <tr><td class="mono">skpay</td><td>SKPay</td><td>越南盾，支付當地相關費用</td></tr>
-              <tr><td class="mono">momo / zola</td><td>TRX</td><td>需走專屬查帳流程</td></tr>
+              <tr><td class="mono">tiger / fsgw</td><td>老虎、皇冠</td><td>中國地區，支付寶、微信</td></tr>
+              <tr><td class="mono">moonpay</td><td>moonpay</td><td>USDT</td></tr>
+              <tr><td class="mono">aftee</td><td>AFTEE</td><td>先享後付</td></tr>
+              <tr><td class="mono">ecpay</td><td>綠界科技</td><td>信用卡、Apple Pay</td></tr>
+              <tr><td class="mono">sonet</td><td>So-net 台灣碩網</td><td>電信小額</td></tr>
+              <tr><td class="mono">centrobill</td><td>centrobill</td><td>信用卡</td></tr>
+              <tr><td class="mono">nineoneapp / vip</td><td>91APP</td><td>信用卡、人工直購</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="muted" style="margin-top:10px;">⚠️ 部分金流商目前已暫停使用（如「聲響」人民幣代收），查到停用中的渠道要先跟主管確認現況，不要直接引導用戶走該管道付款。</p>
       </div>
 
       <div class="card">
